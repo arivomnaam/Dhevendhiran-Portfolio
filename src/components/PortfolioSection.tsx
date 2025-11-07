@@ -2,8 +2,9 @@
 import { useState } from "react";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogClose } from "@/components/ui/dialog";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
+import { ChevronDown, ExternalLink } from "lucide-react";
 
 // Define portfolio items
 const portfolioItems = [
@@ -46,9 +47,9 @@ const portfolioItems = [
 ];
 
 const PortfolioSection = () => {
-  // State for filter and selected project
+  // State for filter and expanded items
   const [filter, setFilter] = useState("All");
-  const [selectedProject, setSelectedProject] = useState<null | typeof portfolioItems[0]>(null);
+  const [expandedItems, setExpandedItems] = useState<number[]>([]);
   
   // Get unique categories
   const categories = ["All", ...Array.from(new Set(portfolioItems.map(item => item.category)))];
@@ -57,6 +58,12 @@ const PortfolioSection = () => {
   const filteredItems = filter === "All" 
     ? portfolioItems 
     : portfolioItems.filter(item => item.category === filter);
+
+  const toggleItem = (id: number) => {
+    setExpandedItems(prev => 
+      prev.includes(id) ? prev.filter(itemId => itemId !== id) : [...prev, id]
+    );
+  };
 
   return (
     <section id="portfolio" className="py-24 px-6 md:px-12">
@@ -87,82 +94,101 @@ const PortfolioSection = () => {
         {/* Portfolio grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredItems.map((item) => (
-            <Card 
-              key={item.id} 
-              className="bg-secondary/50 border-white/5 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+            <Collapsible
+              key={item.id}
+              open={expandedItems.includes(item.id)}
+              onOpenChange={() => toggleItem(item.id)}
             >
-              <div className="aspect-[16/10] overflow-hidden">
-                <AspectRatio ratio={16/10}>
-                  <img 
-                    src={item.imageSrc} 
-                    alt={item.title} 
-                    className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
-                  />
-                </AspectRatio>
-              </div>
-              <CardContent className="pt-6">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-medium">{item.title}</h3>
-                  <span className="text-xs font-medium bg-primary/20 text-primary rounded-full px-2 py-1">
-                    {item.category}
-                  </span>
+              <Card className="bg-secondary/50 border-white/5 overflow-hidden hover:shadow-lg transition-all duration-300">
+                <div className="aspect-[16/10] overflow-hidden">
+                  <AspectRatio ratio={16/10}>
+                    <img 
+                      src={item.imageSrc} 
+                      alt={item.title} 
+                      className="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
+                    />
+                  </AspectRatio>
                 </div>
-                <p className="text-muted-foreground text-sm">{item.description}</p>
-              </CardContent>
-              <CardFooter>
-                <Button 
-                  variant="ghost" 
-                  className="w-full text-primary hover:text-primary hover:bg-primary/10"
-                  onClick={() => setSelectedProject(item)}
-                >
-                  View Details
-                </Button>
-              </CardFooter>
-            </Card>
+                <CardContent className="pt-6">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-lg font-medium">{item.title}</h3>
+                    <span className="text-xs font-medium bg-primary/20 text-primary rounded-full px-2 py-1">
+                      {item.category}
+                    </span>
+                  </div>
+                  <p className="text-muted-foreground text-sm">{item.description}</p>
+                </CardContent>
+                <CardFooter>
+                  <CollapsibleTrigger asChild>
+                    <Button 
+                      variant="ghost" 
+                      className="w-full text-primary hover:text-primary hover:bg-primary/10 justify-between"
+                    >
+                      View Details
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${expandedItems.includes(item.id) ? 'rotate-180' : ''}`} />
+                    </Button>
+                  </CollapsibleTrigger>
+                </CardFooter>
+                
+                <CollapsibleContent>
+                  <div className="px-6 pb-6 space-y-6 border-t border-white/5 pt-6">
+                    {/* Image Section */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-3">Project Gallery</h4>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div className="aspect-video bg-secondary rounded-md overflow-hidden">
+                          <img 
+                            src={item.imageSrc} 
+                            alt={`${item.title} preview 1`} 
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                        <div className="aspect-video bg-secondary rounded-md flex items-center justify-center text-muted-foreground text-xs">
+                          Add image 2
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Description Section */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Description</h4>
+                      <p className="text-muted-foreground text-sm">
+                        {item.detailedDescription}
+                      </p>
+                    </div>
+
+                    {/* Tools Section */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Tools & Technologies</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {item.tools.map((tool) => (
+                          <span key={tool} className="px-3 py-1 bg-primary/10 text-primary rounded-full text-xs">
+                            {tool}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Project Link Section */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Project Link</h4>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        className="gap-2"
+                        onClick={() => window.open('#', '_blank')}
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                        View Live Project
+                      </Button>
+                    </div>
+                  </div>
+                </CollapsibleContent>
+              </Card>
+            </Collapsible>
           ))}
         </div>
       </div>
-      
-      {/* Project detail dialog */}
-      <Dialog open={selectedProject !== null} onOpenChange={() => setSelectedProject(null)}>
-        {selectedProject && (
-          <DialogContent className="max-w-3xl">
-            <DialogHeader>
-              <DialogTitle className="text-xl font-medium">{selectedProject.title}</DialogTitle>
-            </DialogHeader>
-            <div className="space-y-6">
-              <div className="overflow-hidden rounded-md">
-                <AspectRatio ratio={16/9}>
-                  <img 
-                    src={selectedProject.imageSrc} 
-                    alt={selectedProject.title} 
-                    className="w-full h-full object-cover"
-                  />
-                </AspectRatio>
-              </div>
-              <div>
-                <h4 className="text-lg font-medium mb-2">Project Details</h4>
-                <p className="text-muted-foreground">{selectedProject.detailedDescription}</p>
-              </div>
-              <div>
-                <h4 className="text-lg font-medium mb-2">Tools Used</h4>
-                <div className="flex flex-wrap gap-2">
-                  {selectedProject.tools.map((tool) => (
-                    <span key={tool} className="px-3 py-1 bg-secondary rounded-full text-xs">
-                      {tool}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </div>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="outline">Close</Button>
-              </DialogClose>
-            </DialogFooter>
-          </DialogContent>
-        )}
-      </Dialog>
     </section>
   );
 };
