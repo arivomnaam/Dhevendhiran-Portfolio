@@ -43,6 +43,30 @@ const portfolioItems = [
     imageSrc: "/lovable-uploads/518af080-d2ca-47e0-88ba-c99fa66e0d43.png",
     detailedDescription: "Designed a comprehensive visual system for a vehicle fleet management application. The project included creating an intuitive dashboard, streamlined booking interfaces, and clear reporting visualizations. The design prioritizes user efficiency with color-coded status indicators and simplified navigation paths.",
     tools: ["Figma", "Adobe Illustrator", "Photoshop"]
+  },
+  // ============================================
+  // TEMPLATE ITEM 5 - EDIT BELOW
+  // ============================================
+  {
+    id: 5,
+    title: "[ADD YOUR PROJECT TITLE HERE]", // Edit: Add your project title
+    description: "[ADD SHORT DESCRIPTION HERE - 1-2 sentences]", // Edit: Add brief description
+    category: "Branding", // Edit: Choose from: "Branding", "Event", "UI Design", or add new category
+    imageSrc: "/lovable-uploads/[ADD-YOUR-IMAGE-FILENAME].png", // Edit: Add your image path (upload to public/lovable-uploads/ first)
+    detailedDescription: "[ADD DETAILED DESCRIPTION HERE - 3-4 sentences describing the project in detail, challenges solved, and approach taken]", // Edit: Add detailed description
+    tools: ["[TOOL 1]", "[TOOL 2]", "[TOOL 3]"] // Edit: Add your tools/technologies used
+  },
+  // ============================================
+  // TEMPLATE ITEM 6 - EDIT BELOW
+  // ============================================
+  {
+    id: 6,
+    title: "[ADD YOUR PROJECT TITLE HERE]", // Edit: Add your project title
+    description: "[ADD SHORT DESCRIPTION HERE - 1-2 sentences]", // Edit: Add brief description
+    category: "UI Design", // Edit: Choose from: "Branding", "Event", "UI Design", or add new category
+    imageSrc: "/lovable-uploads/[ADD-YOUR-IMAGE-FILENAME].png", // Edit: Add your image path (upload to public/lovable-uploads/ first)
+    detailedDescription: "[ADD DETAILED DESCRIPTION HERE - 3-4 sentences describing the project in detail, challenges solved, and approach taken]", // Edit: Add detailed description
+    tools: ["[TOOL 1]", "[TOOL 2]", "[TOOL 3]"] // Edit: Add your tools/technologies used
   }
 ];
 
@@ -170,13 +194,14 @@ const PortfolioSection = () => {
                     </div>
 
                     {/* Project Link Section */}
+                    {/* EDIT: Change the URL in onClick to your actual project link */}
                     <div>
                       <h4 className="text-sm font-medium mb-2">Project Link</h4>
                       <Button 
                         variant="outline" 
                         size="sm"
                         className="gap-2"
-                        onClick={() => window.open('#', '_blank')}
+                        onClick={() => window.open('#', '_blank')} // EDIT: Replace '#' with your project URL
                       >
                         <ExternalLink className="h-3 w-3" />
                         View Live Project
